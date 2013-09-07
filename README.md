@@ -35,7 +35,6 @@ rails _3.2.14_ new [app_name] -m https://raw.github.com/tony612/rails_startup_te
   - (test environment) [factory_girl_rails](https://github.com/thoughtbot/factory_girl): FactoryGirl provdes a flexible alternative to Rails fixtures.
   - (production environment) [rails_12factor](https://devcenter.heroku.com/articles/rails-integration-gems): This is needed for deploying Rails 4 applications on [Heroku](http://heroku.com).
   - (Optional) [anjlab-bootstrap-rails](https://github.com/anjlab/bootstrap-rails).
-
   - (Optional) [font-awesome-rails](https://github.com/bokmann/font-awesome-rails).
 
 2. Cleans up assets by renaming `application.css` to `application.css.scss` and removing the `include_tree` directives. It's better design to import and require things manually. For example, `@import 'bootstrap';`
