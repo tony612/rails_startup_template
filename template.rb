@@ -83,6 +83,12 @@ if has_font_awesome = is_lazy || yes?("Use font-awesome")
   gem "font-awesome-rails"
 end
 
+# Replace gem source
+# ==================================================
+if yes?("Use source of taobao?")
+  run 'sed -i "" -e "s/https:\/\/rubygems.org/http:\/\/ruby.taobao.org/g" Gemfile'
+end
+
 # Bundle installing
 run "bundle install"
 
