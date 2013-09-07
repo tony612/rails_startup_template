@@ -88,7 +88,8 @@ end
 # Replace gem source
 # ==================================================
 if yes?("Use source of taobao?")
-  run 'sed -i "" -e "s/https:\/\/rubygems.org/http:\/\/ruby.taobao.org/g" Gemfile'
+  # run 'sed -i "" -e "s/https:\/\/rubygems.org/http:\/\/ruby.taobao.org/g" Gemfile'
+  add_source "http://ruby.taobao.org/"
 end
 
 # Bundle installing
