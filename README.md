@@ -37,15 +37,17 @@ rails _3.2.14_ new [app_name] -m https://raw.github.com/tony612/rails_startup_te
   - (Optional) [anjlab-bootstrap-rails](https://github.com/anjlab/bootstrap-rails).
   - (Optional) [font-awesome-rails](https://github.com/bokmann/font-awesome-rails).
 
-2. Cleans up assets by renaming `application.css` to `application.css.scss` and removing the `include_tree` directives. It's better design to import and require things manually. For example, `@import 'bootstrap';`
+2. Lazy mode. Set some gems which are optional originally default, including devise, cancan, bootstrap, font-awesome
 
-3. bundle install
+3. Cleans up assets by renaming `application.css` to `application.css.scss` and removing the `include_tree` directives. It's better design to import and require things manually. For example, `@import 'bootstrap';`
 
-4. Initialize some gems: guard, devise, cancan, activeadmin, bootstrap, fontawesome
+4. bundle install
 
-5. Initializes a new git repository with an initial commit.
+5. Initialize some gems: guard, devise, cancan, activeadmin, bootstrap, fontawesome
 
-6. Optionally create a github repository.
+6. Initializes a new git repository with an initial commit.
+
+7. Optionally create a github repository.
 
 ### Note
 
