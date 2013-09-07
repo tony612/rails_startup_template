@@ -1,12 +1,6 @@
 # Gems
 # ==================================================
 
-# Segment.io as an analytics solution (https://github.com/segmentio/analytics-ruby)
-gem "analytics-ruby"
-# For encrypted password
-gem "bcrypt-ruby"
-# Useful SASS mixins (http://bourbon.io/)
-gem "bourbon"
 
 # For authorization (https://github.com/ryanb/cancan)
 gem "cancan"
@@ -16,8 +10,6 @@ gem "haml-rails" if yes?("Use HAML instead of ERB?")
 
 # Simple form builder (https://github.com/plataformatec/simple_form)
 gem "simple_form"
-# To generate UUIDs, useful for various things
-gem "uuidtools"
 
 gem_group :development do
   # Rspec for tests (https://github.com/rspec/rspec-rails)
@@ -30,7 +22,6 @@ gem_group :test do
   gem "rspec-rails"
   # Capybara for integration testing (https://github.com/jnicklas/capybara)
   gem "capybara" 
-  gem "capybara-webkit"
   # FactoryGirl instead of Rails fixtures (https://github.com/thoughtbot/factory_girl)
   gem "factory_girl_rails"
 end
@@ -41,15 +32,6 @@ gem_group :production do
 end
 
 
-# Setting up foreman to deal with environment variables and services
-# https://github.com/ddollar/foreman
-# ==================================================
-# Use Procfile for foreman
-run "echo 'web: bundle exec rails server -p $PORT' >> Procfile"
-run "echo PORT=3000 >> .env"
-run "echo '.env' >> .gitignore"
-# We need this with foreman to see log output immediately
-run "echo 'STDOUT.sync = true' >> config/environments/development.rb"
 
 
 
