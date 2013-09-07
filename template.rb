@@ -1,108 +1,156 @@
 # Gems
 # ==================================================
 
+is_lazy = yes?("Use lazy mode(including devise, cancan, bootstrap, font-awesome")
 
-# For authorization (https://github.com/ryanb/cancan)
-gem "cancan"
+case ask("Which database?(1. Sqlite 2. Mysql 3. Postgres)")
+when "2"
+  # https://github.com/brianmario/mysql2
+  gem "mysql2"
+when "3"
+  # https://bitbucket.org/ged/ruby-pg/wiki/Home
+  gem "pg"
+end
 
-# HAML templating language (http://haml.info)
-gem "haml-rails" if yes?("Use HAML instead of ERB?")
+# https://github.com/macournoyer/thin
+gem "thin"
+
+if has_devise = is_lazy || yes?("Authentication using devise?")
+  # For authentication (https://github.com/plataformatec/devise)
+  gem "devise"
+end
+
+if has_cancan = is_lazy || yes?("Authorization using cancan")
+  # For authorization (https://github.com/ryanb/cancan)
+  gem "cancan"
+end
+
+case ask("Which template language?(1.erb 2.haml 3. slim)")
+when "2"
+  # HAML templating language (http://haml.info)
+  gem "haml-rails"
+when "3"
+  # Slim templating language http://slim-lang.com/
+  gem "slim-rails"
+else
+end
 
 # Simple form builder (https://github.com/plataformatec/simple_form)
 gem "simple_form"
+
+if has_activeadmin = yes?("Use administration framework active_admin")
+  # https://github.com/gregbell/active_admin
+  gem 'activeadmin'
+end
 
 gem_group :development do
   # Rspec for tests (https://github.com/rspec/rspec-rails)
   gem "rspec-rails"
   # Guard for automatically launching your specs when files are modified. (https://github.com/guard/guard-rspec)
   gem "guard-rspec"
+
+  # Rails 3 pry initializer
+  # https://github.com/rweng/pry-rails
+  gem "pry-rails"
+
+  # Pry navigation commands via debugger (formerly ruby-debug)
+  # https://github.com/nixme/pry-debugger
+  gem "pry-debugger"
 end
 
 gem_group :test do
   gem "rspec-rails"
   # Capybara for integration testing (https://github.com/jnicklas/capybara)
-  gem "capybara" 
+  gem "capybara"
   # FactoryGirl instead of Rails fixtures (https://github.com/thoughtbot/factory_girl)
   gem "factory_girl_rails"
 end
 
-gem_group :production do
-  # For Rails 4 deployment on Heroku
-  gem "rails_12factor"
+if !is_lazy && yes?("Need to deploy on Heroku for rails 4")
+  gem_group :production do
+    # For Rails 4 deployment on Heroku
+    gem "rails_12factor"
+  end
 end
 
+if has_bootstrap = is_lazy || yes?("Use Twitter bootstrap?")
+  # https://github.com/anjlab/bootstrap-rails
+  gem 'anjlab-bootstrap-rails', :require => 'bootstrap-rails'
+end
 
+if has_font_awesome = is_lazy || yes?("Use font-awesome")
+  # https://github.com/bokmann/font-awesome-rails
+  gem "font-awesome-rails"
+end
 
-
-
-# Initialize guard
-# ==================================================
-run "bundle exec guard init rspec"
-
-
-
-# Initialize CanCan
-# ==================================================
-run "rails g cancan:ability"
-
+# Bundle installing
+run "bundle install"
 
 
 # Clean up Assets
 # ==================================================
 # Use SASS extension for application.css
 run "mv app/assets/stylesheets/application.css app/assets/stylesheets/application.css.scss"
-# Remove the require_tree directives from the SASS and JavaScript files. 
-# It's better design to import or require things manually.
-run "sed -i '' /require_tree/d app/assets/javascripts/application.js"
-run "sed -i '' /require_tree/d app/assets/stylesheets/application.css.scss"
-# Add bourbon to stylesheet file
 run "echo >> app/assets/stylesheets/application.css.scss"
-run "echo '@import \"bourbon\";' >>  app/assets/stylesheets/application.css.scss"
 
-
-
-
-# Bootstrap: install from https://github.com/twbs/bootstrap
-# Note: This is 3.0.0
+# Initialize guard
 # ==================================================
-if yes?("Download bootstrap?")
-  run "wget https://github.com/twbs/bootstrap/archive/v3.0.0.zip -O bootstrap.zip -O bootstrap.zip"
-  run "unzip bootstrap.zip -d bootstrap && rm bootstrap.zip"
-  run "cp bootstrap/bootstrap-3.0.0/dist/css/bootstrap.css vendor/assets/stylesheets/"
-  run "cp bootstrap/bootstrap-3.0.0/dist/js/bootstrap.js vendor/assets/javascripts/"
-  run "rm -rf bootstrap"
-  run "echo '@import \"bootstrap\";' >>  app/assets/stylesheets/application.css.scss"
-  run "rails g simple_form:install --bootstrap"
+run "bundle exec guard init rspec"
+
+
+if has_devise
+
+  # Initialize Devise
+  # ==================================================
+  run "rails g devise:install"
+  model_name = ask("What's the generated model name?(1. don't generate 2. User 3. Admin Or Customize")
+  if model_name != "1"
+    model_name =
+      case model_name
+      when "2" then "User"
+      when "3" then "Admin"
+      else
+      end
+    run "rails g devise #{model_name}"
+  end
+
+end
+
+if has_cancan
+  # Initialize CanCan
+  # ==================================================
+  run "rails g cancan:ability"
+end
+
+if has_activeadmin
+  run "rails generate active_admin:install"
 end
 
 
-# Font-awesome: Install from http://fortawesome.github.io/Font-Awesome/
-# ==================================================
-if yes?("Download font-awesome?")
-  run "wget http://fortawesome.github.io/Font-Awesome/assets/font-awesome.zip -O font-awesome.zip"
-  run "unzip font-awesome.zip && rm font-awesome.zip"
-  run "cp font-awesome/css/font-awesome.css vendor/assets/stylesheets/"
-  run "cp -r font-awesome/font public/font"
-  run "rm -rf font-awesome"
+if has_bootstrap
+  run "echo '@import \"twitter/bootstrap\";' >>  app/assets/stylesheets/application.css.scss"
+  run "echo '//= require twitter/bootstrap' >>  app/assets/javascripts/application.js"
+  run "rails g simple_form:install --bootstrap"
+end
+
+if has_font_awesome
   run "echo '@import \"font-awesome\";' >>  app/assets/stylesheets/application.css.scss"
 end
 
 
-# Ignore rails doc files, Vim/Emacs swap files, .DS_Store, and more
+run "rake db:migrate"
+
+
+# Ignore Vim/Emacs swap files, .DS_Store, and more
 # ===================================================
 run "cat << EOF >> .gitignore
 /.bundle
 /db/*.sqlite3
-/db/*.sqlite3-journal
 /log/*.log
 /tmp
 database.yml
-doc/
 *.swp
 *~
-.project
-.idea
-.secret
 .DS_Store
 EOF"
 
