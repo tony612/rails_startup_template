@@ -8,7 +8,7 @@ when "2"
   # https://github.com/brianmario/mysql2
   gem "mysql2"
 when "3"
-  # https://bitbucket.org/ged/ruby-pg/wiki/Home
+  # https://bitbucket.org/ged/ruby-pg
   gem "pg"
 end
 
